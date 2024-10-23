@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vision Digital</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <link rel="stylesheet" href="styles.css">
+
+</head>
+
+<body>
+    <div class="sticky-top">
+        <nav class="navbar navbar-expand-lg navbar-dark">
+
+            <div class="container-fluid">
+                <a class="navbar-brand" href="index.html">
+                    <img src="img/logo.png" alt="Logo" style="height: 40px;">
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto">
+
+                        <li class="nav-item" id="center2">
+                            <a class="nav-link" href="teclados.html">
+                                <i class="bi bi-keyboard me-2"></i> Teclados
+                            </a>
+                        </li>
+                        <li class="nav-item" id="center3">
+                            <a class="nav-link" href="auriculares.html">
+                                <i class="bi bi-headphones me-2"></i> Auriculares
+                            </a>
+                        </li>
+                        <li class="nav-item" id="center4">
+                            <a class="nav-link" href="fundas.html">
+                                <i class="bi bi-phone-fill me-2"></i> Fundas
+                            </a>
+                        </li>
+                        <li class="nav-item" id="center5">
+                            <a class="nav-link" href="cargadores.html">
+                                <i class="bi bi-battery-charging me-2"></i> Cargadores
+                            </a>
+                        </li>
+                        <li class="nav-item" id="center6">
+                            <a class="nav-link" href="parlantes.html">
+                                <i class="bi bi-speaker me-2"></i> Parlantes
+                            </a>
+                        </li>
+                        <li class="nav-item" id="center7">
+                            <a class="nav-link" href="otros.html">
+                                <i class="bi bi-box me-2"></i> Otros
+                            </a>
+                        </li>
+
+                        <li class="nav-item" id="adminPedidos" style="display: none;">
+                            <a class="nav-link" href="adminPedidos.html"><i class="bi bi-clipboard-check me-2"></i>
+                                Admin Pedidos</a>
+                        </li>
+                        <li class="nav-item" id="pedidos" style="display: none;">
+                            <a class="nav-link" href="Pedidos.html"><i class="bi bi-clipboard-check me-2"></i>
+                                Pedidos</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" id="logeadosino" href="login/register.html"><i
+                                    class="bi bi-person-circle"></i> Register</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="adminButton" href="verificarAdmin.html"><i
+                                    class="bi bi-person-fill-gear"></i> Admin</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="carrito" href="carrito.html">
+                                <i class="bi bi-cart"></i> Carrito
+                                <span class="badge bg-light text-dark">0</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </div>
+
+    <div id="carouselExampleControls" class="carousel slide mt-4" data-bs-ride="carousel">
+        <div class="carousel-inner">
+            <div class="carousel-item active">
+                <img src="./img/visiondigital.jpg" class="d-block w-100" alt="...">
+            </div>
+            <div class="carousel-item">
+                <img src="./img/visiondigital.jpg" class="d-block w-100" alt="...">
+            </div>
+            <div class="carousel-item">
+                <img src="./img/visiondigital.jpg" class="d-block w-100" alt="...">
+            </div>
+            <div class="carousel-item">
+                <img src="./img/visiondigital.jpg" class="d-block w-100" alt="...">
+            </div>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls"
+            data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Anterior</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls"
+            data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Siguiente</span>
+        </button>
+    </div>
+
+    <div class="container mt-5">
+        <h3>Productos Destacados</h3>
+        <hr>
+        <div id="productCarousel" class="carousel slide">
+            <div class="carousel-inner">
+                <div class="carousel-item active">
+                    <div id="agregarcosas" class="row">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Marcas Carousel -->
+    <div class="carousel-wrapper">
+        <div class="carousel">
+            <div class="item"><img src="https://bonomosistemas.com.ar/site/wp-content/uploads/intel.jpg" alt="apple">
+            </div>
+            <div class="item"><img src="https://bonomosistemas.com.ar/site/wp-content/uploads/lenovo.jpg" alt="Google">
+            </div>
+            <div class="item"><img src="https://bonomosistemas.com.ar/site/wp-content/uploads/amd.jpg" alt="Amazon">
+            </div>
+            <div class="item"><img src="https://bonomosistemas.com.ar/site/wp-content/uploads/exo.jpg" alt="Microsoft">
+            </div>
+            <div class="item"><img src="https://bonomosistemas.com.ar/site/wp-content/uploads/hp.jpg" alt="Facebook">
+            </div>
+            <div class="item"><img src="https://bonomosistemas.com.ar/site/wp-content/uploads/dell.jpg" alt="Netflix">
+            </div>
+            <div class="item"><img src="https://bonomosistemas.com.ar/site/wp-content/uploads/bangho.jpg" alt="Testla">
+            </div>
+            <div class="item"><img src="https://bonomosistemas.com.ar/site/wp-content/uploads/amd.jpg" alt="Amazon">
+            </div>
+            <div class="item"><img src="https://bonomosistemas.com.ar/site/wp-content/uploads/exo.jpg" alt="Microsoft">
+            </div>
+            <div class="item"><img src="https://bonomosistemas.com.ar/site/wp-content/uploads/hp.jpg" alt="Facebook">
+            </div>
+            <div class="item"><img src="https://bonomosistemas.com.ar/site/wp-content/uploads/dell.jpg" alt="Netflix">
+            </div>
+            <div class="item"><img src="https://bonomosistemas.com.ar/site/wp-content/uploads/intel.jpg" alt="apple">
+            </div>
+            <div class="item"><img src="https://bonomosistemas.com.ar/site/wp-content/uploads/lenovo.jpg" alt="Google">
+            </div>
+            <div class="item"><img src="https://bonomosistemas.com.ar/site/wp-content/uploads/amd.jpg" alt="Amazon">
+            </div>
+            <div class="item"><img src="https://bonomosistemas.com.ar/site/wp-content/uploads/exo.jpg" alt="Microsoft">
+            </div>
+            <div class="item"><img src="https://bonomosistemas.com.ar/site/wp-content/uploads/hp.jpg" alt="Facebook">
+            </div>
+            <div class="item"><img src="https://bonomosistemas.com.ar/site/wp-content/uploads/dell.jpg" alt="Netflix">
+            </div>
+            <div class="item"><img src="https://bonomosistemas.com.ar/site/wp-content/uploads/bangho.jpg" alt="Testla">
+            </div>
+            <div class="item"><img src="https://bonomosistemas.com.ar/site/wp-content/uploads/amd.jpg" alt="Amazon">
+            </div>
+            <div class="item"><img src="https://bonomosistemas.com.ar/site/wp-content/uploads/exo.jpg" alt="Microsoft">
+            </div>
+            <div class="item"><img src="https://bonomosistemas.com.ar/site/wp-content/uploads/hp.jpg" alt="Facebook">
+            </div>
+            <div class="item"><img src="https://bonomosistemas.com.ar/site/wp-content/uploads/dell.jpg" alt="Netflix">
+            </div>
+            <div class="item"><img src="https://bonomosistemas.com.ar/site/wp-content/uploads/intel.jpg" alt="apple">
+            </div>
+            <div class="item"><img src="https://bonomosistemas.com.ar/site/wp-content/uploads/lenovo.jpg" alt="Google">
+            </div>
+            <div class="item"><img src="https://bonomosistemas.com.ar/site/wp-content/uploads/amd.jpg" alt="Amazon">
+            </div>
+            <div class="item"><img src="https://bonomosistemas.com.ar/site/wp-content/uploads/exo.jpg" alt="Microsoft">
+            </div>
+            <div class="item"><img src="https://bonomosistemas.com.ar/site/wp-content/uploads/hp.jpg" alt="Facebook">
+            </div>
+            <div class="item"><img src="https://bonomosistemas.com.ar/site/wp-content/uploads/dell.jpg" alt="Dell">
+            </div>
+            <div class="item"><img src="https://bonomosistemas.com.ar/site/wp-content/uploads/bangho.jpg" alt="Bangho">
+            </div>
+            <div class="item"><img src="https://bonomosistemas.com.ar/site/wp-content/uploads/amd.jpg" alt="Amazon">
+            </div>
+            <div class="item"><img src="https://bonomosistemas.com.ar/site/wp-content/uploads/exo.jpg" alt="Microsoft">
+            </div>
+            <div class="item"><img src="https://bonomosistemas.com.ar/site/wp-content/uploads/hp.jpg" alt="Facebook">
+            </div>
+            <div class="item"><img src="https://bonomosistemas.com.ar/site/wp-content/uploads/dell.jpg" alt="Netflix">
+            </div>
+        </div>
+
+        <footer class="footer">
+            <div class="container d-flex flex-column flex-md-row justify-content-between py-4">
+        
+                <!-- Información de Contacto -->
+                <div class="contact-info">
+                    <h5><strong>Información de Contacto</strong></h5>
+                    <p>
+                        <i class="bi bi-geo-alt"></i> Av. Rigolleau 3169, Berazategui<br>
+                        <i class="bi bi-globe"></i> Buenos Aires, Argentina<br>
+                        <i class="bi bi-telephone"></i> (011) 5665-7009 Líneas Rotativas<br>
+                    </p>
+                </div>
+        
+                <!-- Horarios de Atención -->
+                <div class="business-hours">
+                    <h5><strong>Horarios de Atención</strong></h5>
+                    <p>
+                        <i class="bi bi-shop"></i> Showroom de Atención al Público<br>
+                        <i class="bi bi-calendar"></i> Lunes a Sábados: 10:00 a 14:00 y de 17 a 20 hs.<br>
+                        <i class="bi bi-calendar"></i> Domingos: Cerrado.
+                    </p>
+                </div>
+        
+                <!-- Información de la Empresa -->
+                <div class="company-info">
+                    <h5><strong>Acerca de Vision Digital</strong></h5>
+                    <p>
+                        <a href="nuestra-empresa.html"><i class="bi bi-building"></i> Nuestra Empresa</a><br>
+                        <a href="./AcercadeVisionDigital/Servicio Técnico.html"><i class="bi bi-file-earmark-text"></i> Servicio Técnico</a><br>
+                        <a href="./AcercadeVisionDigital/contacto.html"><i class="fas fa-map-marker-alt"></i>  Contacto</a>
+                    </p>
+                </div>
+            </div>
+        
+            <!-- Redes sociales -->
+            <div class="social-media container d-flex justify-content-center py-3">
+                <a href="https://www.facebook.com" target="_blank"><i class="bi bi-facebook"></i></a>
+                <a href="https://www.twitter.com" target="_blank"><i class="bi bi-twitter"></i></a>
+                <a href="https://www.instagram.com/visiondigitalcalle14" target="_blank"><i class="bi bi-instagram"></i></a>
+            </div>
+        
+            <!-- Copyright -->
+            <div class="container text-center py-2">
+                <p>
+                    Copyright © 2024 Visión Digital. Todos los derechos reservados. Las marcas y los nombres de los productos son marcas registradas de sus respectivas compañías.
+                </p>
+            </div>
+        </footer>
+        
+        <div class="button-container">
+            <a href="AcercadeVisionDigital/contacto.html" class="map-button">
+                <i class="fas fa-location-arrow"></i> Dónde estamos
+
+            </a>
+        </div>
+        <a href="https://api.whatsapp.com/send?phone=1156657009&text=Hola!%20vengo%20de%20la%20pagina%20de%20VisionDigital,%20queria%20hacerte%20una%20consulta!"
+            target="_blank" class="whatsapp-button">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp"
+                class="whatsapp-icon">
+        </a>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="login/verificar_login.js"></script>
+        <script src="scripts/mostrar_productos.js"></script>
+        <script src="scripts/script.js"></script>
+        <script src="scripts/filtrar_productos.js"></script>
+
+</body>
+
+</html>

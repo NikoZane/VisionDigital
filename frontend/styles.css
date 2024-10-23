@@ -1,0 +1,233 @@
+/* Estilos generales */
+nav {
+    background-color: #FFA755 !important;
+}
+
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    background: linear-gradient(#FFA755, 60%, #6495ED);
+}
+
+a {
+    color: inherit; /* Hereda el color del elemento padre */
+    text-decoration: none; /* Elimina el subrayado opcional */
+}
+
+h3 {
+    color: rgb(220, 220, 220);
+    text-align: center;
+}
+
+hr {
+    border: 2px solid rgb(255, 255, 255); /* Cambia el color y grosor */
+    width: 50%; /* Ajusta el ancho de la línea */
+    margin: 20px auto; /* Centra la línea y añade margen vertical */
+}
+
+/* Navbar */
+.navbar-nav {
+    display: flex;
+    width: 100%;
+    justify-content: center; /* Centra los elementos dentro del contenedor */
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.navbar-nav .nav-item[id^="center"] {
+    margin: 0 10px; /* Espaciado opcional entre los elementos */
+}
+
+.navbar-nav .nav-item#carrito,
+.navbar-nav .nav-item#logeadosino {
+    margin-left: auto; /* Mueve estos elementos hacia la derecha */
+}
+
+.navbar-nav .nav-item {
+    margin: 0 5px; /* Ajusta según tus necesidades */
+}
+
+/* Tarjetas de productos */
+.product-card {
+    max-width: 280px;
+    height: 350px;
+    margin: 0 auto;
+    transition: transform 0.2s;
+}
+
+.product-card img {
+    height: 150px;
+    object-fit: cover;
+}
+
+.product-card:hover {
+    transform: scale(1.05);
+}
+
+/* Carrusel */
+.carousel-item img {
+    height: 530px;
+    object-fit: cover;
+}
+
+.carousel-inner .row {
+    justify-content: center;
+}
+
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+    background-color: #000000;
+}
+
+/* Wrapper de carrusel animado */
+.carousel-wrapper {
+    --width: 100px;
+    --gap: 0;
+    --num-items: 10;
+    --ani-offset: calc(var(--width) * var(--num-items) * -1);
+    --ani-speed: 10s;
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+}
+
+.carousel-wrapper::before,
+.carousel-wrapper::after {
+    content: '';
+    position: absolute;
+    width: 20%;
+    height: 100%;
+    z-index: 1;
+    top: 0;
+}
+
+.carousel {
+    display: flex;
+    align-items: center;
+    animation: slide var(--ani-speed) linear infinite;
+}
+
+.item {
+    flex: 1 0 var(--width);
+    text-align: center;
+    padding: 1rem;
+}
+
+.item > img {
+    width: 150%;
+    height: auto;
+    object-fit: cover;
+}
+
+@keyframes slide {
+    100% {
+        transform: translateX(var(--ani-offset));
+    }
+}
+
+/* Botón de WhatsApp */
+.whatsapp-button {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #25D366; /* Color de WhatsApp */
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    text-align: center;
+    line-height: 55px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s;
+    z-index: 1000; /* Asegura que esté por encima de otros elementos */
+}
+
+.whatsapp-button:hover {
+    transform: scale(1.1); /* Aumenta el tamaño al pasar el ratón */
+}
+
+.whatsapp-icon {
+    width: 30px;
+    height: 30px;
+}
+
+/* Botón del mapa */
+.map-button {
+    position: fixed;
+    bottom: 25px;
+    right: 90px;
+    display: inline-flex;
+    align-items: center;
+    padding: 12px 24px;
+    border-radius: 30px;
+    background-color: #007BFF; /* Color de fondo */
+    color: white;
+    text-decoration: none;
+    font-size: 18px;
+    box-shadow: 0 4px 8px rgba(0, 123, 255, 0.2);
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.map-button:hover {
+    background-color: #0056b3; /* Color al pasar el ratón */
+    transform: translateY(-2px); /* Efecto de elevación */
+}
+
+.map-button i {
+    margin-right: 10px; /* Espacio entre el icono y el texto */
+    font-size: 20px;
+}
+
+/* Footer */
+.footer {
+    background-color: #ffa755;
+    color: black;
+    padding: 40px 0;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.footer h5 {
+    font-size: 18px;
+    margin-bottom: 15px;
+    color: #964800;
+}
+
+.footer .contact-info,
+.footer .business-hours,
+.footer .company-info {
+    flex-basis: 30%; /* Ajuste para columnas */
+    margin-bottom: 20px;
+}
+
+.footer a {
+    color: #964800;
+    text-decoration: none;
+}
+
+.footer a:hover {
+    text-decoration: underline;
+}
+
+.social-media i {
+    font-size: 24px;
+    margin: 0 15px;
+    color: #964800;
+}
+
+.social-media i:hover {
+    color: #0056b3;
+}
+
+.footer p {
+    margin: 0;
+}
+
+/* Responsivo */
+@media screen and (max-width: 768px) {
+    #carouselExampleControls {
+        display: none;
+    }
+}

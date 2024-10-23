@@ -1,0 +1,69 @@
+body {
+    background-color: #f8f9fa;
+}
+.product-card {
+    max-width: 280px; /* Controla el ancho máximo de la tarjeta */
+    height: 350px; /* Controla la altura de la tarjeta */
+    margin: 0 auto; /* Centra las tarjetas dentro de las columnas */
+}
+
+.product-card img {
+    height: 150px; /* Ajusta la altura de la imagen dentro de la tarjeta */
+    object-fit: cover; /* Asegura que la imagen cubra el espacio disponible */
+}
+.carousel-item img {
+    height: 250px; /* Ajusta esta altura según tus necesidades */
+    object-fit: cover; /* Mantén la imagen en su proporción */
+}
+.product-card {
+    transition: transform 0.2s;
+
+    
+}
+
+.product-card:hover {
+    transform: scale(1.05);
+}
+
+.carousel-item img {
+    height: 415px;
+    object-fit: cover;
+}
+
+.footer {
+    background-color: #343a40;
+    color: white;
+    padding: 20px 0;
+}
+
+/* Asegúrate de que las columnas en el carrusel estén centradas */
+.carousel-inner .row {
+    justify-content: center;
+}
+
+
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+    background-color: #000000; /* Cambia el color de fondo del ícono aquí */
+}
+.whatsapp-button {
+    position: fixed; /* Posición fija */
+    bottom: 20px; /* Espacio desde el fondo */
+    right: 20px; /* Espacio desde la derecha */
+    background-color: #25D366; /* Color de WhatsApp */
+    border-radius: 50%; /* Hace el botón circular */
+    width: 60px; /* Ancho del botón */
+    height: 60px; /* Alto del botón */
+    text-align: center;
+    line-height: 55px; /* Centra el icono verticalmente */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s; /* Transición para el efecto hover */
+    z-index: 1000; /* Asegura que esté por encima de otros elementos */
+}
+.whatsapp-button:hover {
+    transform: scale(1.1); /* Aumenta el tamaño al pasar el ratón */
+}
+.whatsapp-icon {
+    width: 30px; /* Tamaño del icono */
+    height: 30px; /* Tamaño del icono */
+}
