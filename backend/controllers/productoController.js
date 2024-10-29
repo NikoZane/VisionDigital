@@ -39,7 +39,7 @@ const crearProducto = async (req, res) => {
         });
         res.status(201).json(nuevoProducto);
     } catch (error) {
-        console.error('Error al crear el producto:', error);
+        console.log(error)
         res.status(500).json({ error: 'Error al crear el producto' });
     }
 };
