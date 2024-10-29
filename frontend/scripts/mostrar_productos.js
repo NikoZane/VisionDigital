@@ -1,6 +1,6 @@
 const agregarcosas = document.getElementById('agregarcosas');
 
-fetch('http://localhost:3000/api/productos', {
+fetch('https://vision-digital-api.vercel.app/api/productos', {
     method: 'GET',
     headers: {
         'Content-Type': 'application/json',
