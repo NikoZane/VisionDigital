@@ -62,7 +62,7 @@ document.addEventListener('DOMContentLoaded', function() {
       console.log('FormData:', [...formData.entries()]);
 
       // Envía los datos usando fetch
-      fetch('http://localhost:3000/api/productos', {
+      fetch('https://vision-digital-api.vercel.app/api/productos', {
         method: 'POST',
         body: formData
       })
