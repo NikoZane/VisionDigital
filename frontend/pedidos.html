@@ -219,7 +219,7 @@
                         return;
                     }
 
-                    fetch('http://localhost:3000/api/pedidos')
+                    fetch('https://vision-digital-api.vercel.app/api/pedidos')
                         .then(response => response.json())
                         .then(data => {
                             const userPedidos = data.filter(pedido => pedido.id_usuario == userId);
@@ -243,7 +243,7 @@
 
                                     const productIds = productos.map(prod => prod.id_producto).join(',');
 
-                                    fetch(`http://localhost:3000/api/productos?id=${productIds}`)
+                                    fetch(`https://vision-digital-api.vercel.app/api/productos?id=${productIds}`)
                                         .then(response => response.json())
                                         .then(productData => {
                                             const productMap = {};
@@ -300,7 +300,7 @@
                 return;
             }
 
-            fetch('http://localhost:3000/api/pedidos')
+            fetch('https://vision-digital-api.vercel.app/api/pedidos')
                 .then(response => {
                     if (!response.ok) {
                         throw new Error('Error en la respuesta de la red');
@@ -330,7 +330,7 @@
 
                             const productIds = productos.map(prod => prod.id_producto).join(',');
 
-                            fetch(`http://localhost:3000/api/productos?id=${productIds}`)
+                            fetch(`https://vision-digital-api.vercel.app/api/productos?id=${productIds}`)
                                 .then(response => {
                                     if (!response.ok) {
                                         throw new Error('Error en la respuesta de la red');
