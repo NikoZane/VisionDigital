@@ -1,4 +1,4 @@
-fetch('http://localhost:3000/api/productos', {
+fetch('https://vision-digital-api.vercel.app/api/productos', {
     method: 'GET',
     headers: {
         'Content-Type': 'application/json',
@@ -62,7 +62,7 @@ fetch('http://localhost:3000/api/productos', {
 
 function eliminar(id2) {
     console.log('id ' + id2);
-    fetch('http://localhost:3000/api/productos/' + id2, {
+    fetch('https://vision-digital-api.vercel.app/api/productos/' + id2, {
         method: 'DELETE',
         headers: {
             'Content-Type': 'application/json',
@@ -178,7 +178,7 @@ function actualizar(id2, div, product) {
 }
 
 function actualizarProducto(id2, producto) {
-    fetch('http://localhost:3000/api/productos/' + id2, {
+    fetch('https://vision-digital-api.vercel.app/api/productos/' + id2, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
