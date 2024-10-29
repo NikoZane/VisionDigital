@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
     }
 
-    fetch(`http://localhost:3000/api/productos/${productId}`)
+    fetch(`https://vision-digital-api.vercel.app/api/productos/${productId}`)
         .then(response => {
             if (!response.ok) throw new Error('Error en la respuesta de la API');
             return response.json();
