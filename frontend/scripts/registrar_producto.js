@@ -81,7 +81,7 @@ document.addEventListener('DOMContentLoaded', function() {
         form.reset(); // Limpia el formulario después del envío
       })
       .catch(error => {
-        console.error('Error:', error);
+        console.log('Error:', error);
         alert('Error al registrar el producto');
       });
     }
