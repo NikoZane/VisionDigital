@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 function filtrarProductos(categoria) {
     console.log("Filtrando productos por categoría:", categoria);
-    fetch('http://localhost:3000/api/productos')
+    fetch('https://vision-digital-api.vercel.app/api/productos')
         .then(response => {
             if (!response.ok) {
                 throw new Error('Error en la respuesta de la red');
