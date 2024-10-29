@@ -1,7 +1,13 @@
-import { Sequelize } from 'sequelize';
+// Importa el módulo Sequelize para manejar la conexión con la base de datos
+import {Sequelize} from "sequelize";
+// Importa el módulo pg para configurar el uso de PostgreSQL con Sequelize
+import pg from "pg";
+// Importa la función config de dotenv para cargar las variables de entorno desde un archivo .env
+import {config} from "dotenv";
+config(); // Ejecuta la función para cargar las variables de entorno
 
 // Configuración de la base de datos
-const sequelize = new Sequelize({
+const bd = new Sequelize({
   username: process.env.POSTGRES_USER,
   password: process.env.POSTGRES_PASSWORD,
   database: process.env.POSTGRES_DATABASE,
