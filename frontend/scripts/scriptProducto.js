@@ -46,7 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (imagen) {
                 carouselInner.innerHTML = `
                     <div class="carousel-item active">
-                        <img src="http://localhost:3000/api/${imagen}" alt="Imagen del producto" class="product-image">
+                        <img src="https://vision-digital-api.vercel.app/api/${imagen}" alt="Imagen del producto" class="product-image">
                     </div>
                 `;
             } else {

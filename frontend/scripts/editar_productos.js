@@ -19,7 +19,7 @@ fetch('https://vision-digital-api.vercel.app/api/productos', {
         return `
         <div class="col-lg-3 col-md-4 mb-4">
             <div class="card product-card bg-white shadow"> <!-- Cambiado a bg-white -->
-                <img class="card-img-top" src="http://localhost:3000/api/${product.imagen}" alt="Imagen del producto">
+                <img class="card-img-top" src="https://vision-digital-api.vercel.app/api/${product.imagen}" alt="Imagen del producto">
                 <div class="card-body">
                     <form id="asd${product.id_producto}">
                         <h5 class="card-title">${product.nombre_producto}</h5>

@@ -94,7 +94,7 @@ function mostrarProductos(productos) {
     
 </style>
             <div class="card product-card" onclick="window.location.href='producto.html?id=${product.id_producto}'" style="cursor: pointer;">
-                <img src="http://localhost:3000/api/${product.imagen}" alt="Imagen del producto">
+                <img src="https://vision-digital-api.vercel.app/api/${product.imagen}" alt="Imagen del producto">
                 <div class="card-body">
                     <h5 class="card-title">${product.nombre_producto}</h5>
                     <p class="card-text">$${product.precio}</p>
