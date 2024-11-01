@@ -1,190 +1,107 @@
-document.addEventListener('DOMContentLoaded', () => {
-  const cartContainer = document.getElementById('cart-items');
-  const totalElement = document.getElementById('cart-total');
-  const buttonMp = document.getElementById('button-checkout');
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carrito de Compras</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css" rel="stylesheet">
 
-  function renderCart() {
-      let cart = JSON.parse(localStorage.getItem('cart')) || [];
-      cartContainer.innerHTML = '';
-      let total = 0;
+    <link rel="stylesheet" href="carrito.css">
+        
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg ">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="index.html">
+                <img src="img/logo.png" alt="Logo" style="height: 40px;">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                </ul>
+            </div>
+        </div>
+    </nav>
 
-      cart.forEach(item => {
-          const { name, price, quantity } = item;
-          const priceFloat = typeof price === 'string' ? parseFloat(price) : price;
-          const itemTotal = priceFloat * quantity;
-          total += itemTotal;
 
-          const cartItem = document.createElement('div');
-          cartItem.className = 'cart-item d-flex justify-content-between align-items-center mb-3';
-          cartItem.innerHTML = `
-              <div class="d-flex align-items-center">
-                  <div>
-                      <h5>${name}</h5>
-                      <p class="mb-0">Descripción breve del producto.</p>
-                  </div>
-              </div>
-              <div class="d-flex align-items-center">
-                  <span class="mr-2">$${priceFloat}</span>
-                  <span class="mr-2">x${quantity}</span>
-                  <button class="btn btn-sm btn-danger" data-name="${name}">
-                      <i class="fas fa-trash-alt"></i>
-                  </button>
-              </div>`;
-          cartContainer.appendChild(cartItem);
-      });
+  <div class="container mt-5">
+        <h1 class="mb-4">Carrito de Compras</h1>
+        <div class="row">
+            <div class="col-md-8" id="cart-items">
+            </div>
+            <div class="col-md-4">
+                <div class="bg-light p-3 rounded">
+                    <h4 class="mb-3">Resumen del Pedido</h4>
+                    <div class="cart-total d-flex justify-content-between">
+                        <span>Total</span>
+                        <span id="cart-total">$0.00</span>
+                    </div>
+                    <div id="wallet_container"></div>
+                    <div id="button-checkout"></div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-      totalElement.textContent = `$${total}`;
 
-      document.querySelectorAll('.btn-danger').forEach(button => {
-          button.addEventListener('click', () => {
-              const name = button.getAttribute('data-name');
-              let cart = JSON.parse(localStorage.getItem('cart')) || [];
-              cart = cart.filter(item => item.name !== name);
-              localStorage.setItem('cart', JSON.stringify(cart));
-              renderCart();
-          });
-      });
-  }
-
-  function verificarCarrito() {
-      const carritoJSON = localStorage.getItem('cart');
-      const carrito = JSON.parse(carritoJSON);
-      if (!carrito || carrito.length === 0) {
-          procederpago.style.display = 'none';
-          return false;
-      }
-      return true;
-  }
-
-  function validarToken(token, datos) {
-      fetch('https://vision-digital-api.vercel.app/api/usuarios/validar', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ token })
-      })
-      .then(response => response.json())
-      .then(data => {
-          const carritoJSON = localStorage.getItem('cart');
-          const carrito = JSON.parse(carritoJSON);
-          
-          const pedidos = {
-              id_usuario: data.id_usuario,
-              productos: carrito.map(item => ({
-                  id_producto: item.id,
-                  cantidad: item.quantity
-              })),
-              direccion: datos.direccion,
-              codigo_postal: datos.codigoPostal,
-              ciudad: datos.ciudad,
-              provincia: datos.provincia
-          };
-  
-          crearPedidos(pedidos);
-      })
-      .catch(error => reiniciar());
-  }
-  
-  async function iniciarPagoMercadoPago() {
-    const cart = JSON.parse(localStorage.getItem('cart')) || [];
-    const items = cart.map(item => ({
-        title: item.name,
-        unit_price: Number(item.price),
-        quantity: item.quantity,
-    }));
-
-    try {
-        const response = await fetch('https://vision-digital-api.vercel.app/api/create_preference', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ items })
-        });
-
-        if (!response.ok) {
-            throw new Error('Error al crear la preferencia de pago');
-        }
-
-        const { id } = await response.json();
-
-        // Inicializar el botón de pago de Mercado Pago
-        const mp = new MercadoPago('APP_USR-227034dd-364d-4a37-9ff8-91462d7cdbba', {
-            locale: 'es-AR'
-        });
-
-        mp.checkout({
-            preference: {
-                id: id
-            },
-            render: {
-                container: '#button-checkout',
-                label: 'Pagar con Mercado Pago',
-                buttonText: 'Proceder al Pago',
-            },
-            autoOpen: true
-        });
-    } catch (error) {
-        console.error('Error en la comunicación con el servidor:', error);
-        alert('Ocurrió un error al comunicarse con el servidor. Por favor, intente de nuevo.');
-    }
-}
-  
-    async function crearPedidos(pedido) {
-      try {
-        const response = await fetch('https://vision-digital-api.vercel.app/api/pedidos', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(pedido)
-        });
     
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(`Error: ${errorData.error}`);
-        }
+    <footer class="footer text-center">
+        <div class="container d-flex justify-content-around">
+           
+            <!-- Información de Contacto -->
+            <div class="contact-info">
+                <p><strong>Información de Contacto</strong></p>
+                <p>
+                    <i class="bi bi-geo-alt"></i> Av. Rigolleau 4253, Berazategui<br>
+                    <i class="bi bi-globe"></i> Buenos Aires, Argentina<br>
+                    <i class="bi bi-telephone"></i> (011) 4256-1689 Líneas Rotativas<br>
+
+                </p>
+            </div>
     
-        alert('Pedido creado exitosamente');
-        // Aquí puedes redirigir al usuario a una página de confirmación
-      } catch (error) {
-        console.error('Error al crear el pedido:', error);
-        alert('No se pudo procesar el pedido. Por favor, intente de nuevo.');
-      }
-    }
+            <!-- Horarios de Atención -->
+            <div class="business-hours">
+                <p><strong>Horarios de Atención</strong></p>
+                <p>
+                    <i class="bi bi-shop"></i> Showroom de Atención al Público<br>
+                    <i class="bi bi-calendar"></i> Lunes a Viernes: 10:00 a 17:00 hs.<br>
+                    <i class="bi bi-calendar"></i> Sábados: 09:00 a 13:00 hs.
+                </p>
+            </div>
+    
+            <!-- Información de la Empresa -->
+            <div class="company-info">
+                <p><strong>Acerca de Vision Digital</strong></p>
+                <p>
+                    <a href="nuestra-empresa.html"><i class="bi bi-building"></i> Nuestra Empresa</a><br>
+                    <a href="./AcercadeVisionDigital/Servicio Técnico.html"><i class="bi bi-file-earmark-text"></i> Términos y Condiciones</a><br>
+                    <a href="./AcercadeVisionDigital/contacto.html"><i class="bi bi-chat"></i> Contacto</a>
+                </p>
+            </div>
+        </div>
+    
+        <!-- Redes sociales -->
+        <div class="social-media">
+            <p>
+                <a href="https://www.facebook.com" target="_blank"><i class="bi bi-facebook"></i></a>
+                <a href="https://www.twitter.com" target="_blank"><i class="bi bi-twitter"></i></a>
+                <a href="https://www.instagram.com" target="_blank"><i class="bi bi-instagram"></i></a>
+                <br>&copy; Vision Digital. Todos los derechos reservados.
+            </p>
+        </div>
+    </footer>
 
-  function reiniciar() {
-      localStorage.removeItem('authToken');
-      window.location.href = 'login/login.html';
-  }
-
-  renderCart();
-  verificarCarrito();
-
-  buttonMp.addEventListener('click', async function(event) {
-    event.preventDefault();
-    const token = localStorage.getItem('authToken');
-    if (!token) {
-        alert('Debe iniciar sesión para proceder con el pago.');
-        window.location.href = 'login/login.html';
-        return;
-    }
-    if (!verificarCarrito()) return;
-
-    try {
-        await iniciarPagoMercadoPago();
-    } catch (error) {
-        console.error('Error al iniciar el pago:', error);
-        alert('No se pudo iniciar el proceso de pago. Por favor, inténtelo de nuevo.');
-    }
-});
-
-  document.getElementById('paymentForm').addEventListener('submit', function(event) {
-      event.preventDefault();
-      // Validar los campos del formulario...
-      // Si todo está correcto, proceder con el pago
-      const token = localStorage.getItem('authToken');
-      const datos = {
-          direccion: document.getElementById('direccion').value,
-          codigoPostal: document.getElementById('codigoPostal').value,
-          ciudad: document.getElementById('ciudad').value,
-          provincia: document.getElementById('provincia').value
-      };
-      validarToken(token, datos);
-  });
-});
+    <a href="https://api.whatsapp.com/send?phone=1156657009&text=Hola%20quiero%20más%20información!" target="_blank" class="whatsapp-button">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp" class="whatsapp-icon">
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="scripts/carrito.js"></script>
+    <script src="https://sdk.mercadopago.com/js/v2"></script>
+</body>
+</html>
