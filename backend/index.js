@@ -33,38 +33,26 @@ const client = new MercadoPagoConfig({
 app.use('/api/productos', productoRoutes);
 app.use('/api/usuarios', usuarioRoutes);
 app.use('/api/pedidos', pedidoRoutes);
-
 app.post('/api/create_preference', async (req, res) => {
-    console.log('Recibida solicitud para crear preferencia:', req.body);
-    try {
+  try {
       const preference = new Preference(client);
-      console.log('Creando preferencia con los siguientes datos:', {
-        items: req.body.items,
-        back_urls: {
-          success: "http://localhost:3000/success",
-          failure: "http://localhost:3000/failure",
-          pending: "http://localhost:3000/pending"
-        },
-        auto_return: "approved",
-      });
       const result = await preference.create({
-        body: {
-          items: req.body.items,
-          back_urls: {
-            success: "http://localhost:3000/success",
-            failure: "http://localhost:3000/failure",
-            pending: "http://localhost:3000/pending"
-          },
-          auto_return: "approved",
-        }
+          body: {
+              items: req.body.items,
+              back_urls: {
+                  success: "http://localhost:3000/formulario-envio.html", // Actualizado
+                  failure: "http://localhost:3000/carrito.html",
+                  pending: "http://localhost:3000/carrito.html"
+              },
+              auto_return: "approved",
+          }
       });
-      console.log('Preferencia creada exitosamente:', result);
       res.json({ id: result.id });
-    } catch (error) {
-      console.error('Error detallado al crear la preferencia:', error);
-      res.status(500).json({ error: 'Error al crear la preferencia de pago', details: error.message });
-    }
-  });
+  } catch (error) {
+      console.error('Error:', error);
+      res.status(500).json({ error: 'Error al crear la preferencia de pago' });
+  }
+});
 
 // Ruta raíz opcional (para fines de prueba)
 app.get('/', (req, res) => {
