@@ -53,8 +53,11 @@ document.addEventListener('DOMContentLoaded', () => {
     alert('Pedido creado exitosamente');
     localStorage.removeItem('cart'); // Limpiar el carrito
     window.location.href = 'index.html'; // Redirigir al inicio
+                
 } else {
     throw new Error('Error al crear el pedido');
+                    console.error('Detalles del error en la creación del pedido:', errorDetails);
+
 }
 
             alert('Pedido creado exitosamente');
