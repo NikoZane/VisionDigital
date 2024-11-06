@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         try {
             // Validar el token
-            const validacionResponse = await fetch('http://localhost:3000/api/usuarios/validar', {
+            const validacionResponse = await fetch('https://vision-digital-api.vercel.app/api/usuarios/validar', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ token })
@@ -43,15 +43,19 @@ document.addEventListener('DOMContentLoaded', () => {
             };
 
             // Crear el pedido
-            const pedidoResponse = await fetch('http://localhost:3000/api/pedidos', {
+            const pedidoResponse = await fetch('https://vision-digital-api.vercel.app/api/pedidos', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(pedido)
             });
 
-            if (!pedidoResponse.ok) {
-                throw new Error('Error al crear el pedido');
-            }
+            if (pedidoResponse.ok) {
+    alert('Pedido creado exitosamente');
+    localStorage.removeItem('cart'); // Limpiar el carrito
+    window.location.href = 'index.html'; // Redirigir al inicio
+} else {
+    throw new Error('Error al crear el pedido');
+}
 
             alert('Pedido creado exitosamente');
             localStorage.removeItem('cart'); // Limpiar el carrito
