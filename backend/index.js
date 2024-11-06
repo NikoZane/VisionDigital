@@ -40,7 +40,7 @@ app.post('/api/create_preference', async (req, res) => {
           body: {
               items: req.body.items,
               back_urls: {
-                  success: "http://localhost:3000/formulario-envio.html", // Actualizado
+                  success: "https://vision-digital.vercel.app/formulario-envio.html", // Actualizado
                   failure: "http://localhost:3000/carrito.html",
                   pending: "http://localhost:3000/carrito.html"
               },
