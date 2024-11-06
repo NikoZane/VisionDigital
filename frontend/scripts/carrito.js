@@ -72,7 +72,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         try {
             // Validar el token
-            const response = await fetch('http://localhost:3000/api/usuarios/validar', {
+            const response = await fetch('https://vision-digital-api.vercel.app/api/usuarios/validar', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ token })
@@ -105,7 +105,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }));
 
         try {
-            const response = await fetch('http://localhost:3000/api/create_preference', {
+            const response = await fetch('https://vision-digital-api.vercel.app/api/create_preference', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ items })
