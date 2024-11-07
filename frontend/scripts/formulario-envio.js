@@ -41,11 +41,9 @@ document.addEventListener('DOMContentLoaded', () => {
             
             // Modificación en la transformación de productos
             const productosFormateados = cart.map(item => {
-                // Aquí, eliminamos la necesidad de verificar una id explícita
-                // Aseguramos que cada item tenga los datos mínimos necesarios
+                // Usamos 0 si no hay un ID válido
                 return {
-                    // Usamos el índice del producto o algún otro identificador único si es necesario
-                    id_producto: item.productId || item.id || `producto_${Math.random().toString(36).substr(2, 9)}`, 
+                    id_producto: item.productId || item.id || 0,  // Asignamos 0 si no hay ID
                     cantidad: parseInt(item.quantity || 1),
                     precio: parseFloat(item.price || 0)  // Agregado el precio si el API lo requiere
                 };
@@ -84,4 +82,3 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
-
