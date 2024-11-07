@@ -1,10 +1,9 @@
 document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('shippingForm');
-
     form.addEventListener('submit', async (event) => {
         event.preventDefault();
-
         const token = localStorage.getItem('authToken');
+        
         if (!token) {
             alert('Debe iniciar sesión para continuar');
             window.location.href = 'login/login.html';
@@ -49,24 +48,19 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: JSON.stringify(pedido)
             });
 
-            if (pedidoResponse.ok) {
-    alert('Pedido creado exitosamente');
-    localStorage.removeItem('cart'); // Limpiar el carrito
-    window.location.href = 'index.html'; // Redirigir al inicio
-                
-} else {
-    throw new Error('Error al crear el pedido');
-                    console.error('Detalles del error en la creación del pedido:', errorDetails);
-
-}
+            if (!pedidoResponse.ok) {
+                const errorDetails = await pedidoResponse.json();
+                console.error('Detalles del error:', errorDetails);
+                throw new Error('Error al crear el pedido');
+            }
 
             alert('Pedido creado exitosamente');
-            localStorage.removeItem('cart'); // Limpiar el carrito
-            window.location.href = 'index.html'; // Redirigir al inicio
+            localStorage.removeItem('cart');
+            window.location.href = 'index.html';
 
         } catch (error) {
             console.error('Error:', error);
-            alert('Error al procesar el pedido');
+            alert('Error al procesar el pedido: ' + error.message);
         }
     });
 });
