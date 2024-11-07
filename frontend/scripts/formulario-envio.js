@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const datos = {
             direccion: document.getElementById('direccion').value,
-            codigo_postal: document.getElementById('codigoPostal').value, // Cambiado a codigo_postal
+            codigo_postal: document.getElementById('codigoPostal').value,
             ciudad: document.getElementById('ciudad').value,
             provincia: document.getElementById('provincia').value
         };
@@ -38,20 +38,40 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const userData = await validacionResponse.json();
             
+            // Transformar los productos del carrito al formato esperado
+            const productosFormateados = cart.map(item => {
+                // Asegurarse de que los valores sean números
+                const id_producto = parseInt(item.id);
+                const cantidad = parseInt(item.quantity);
+
+                // Verificar que los valores sean válidos
+                if (isNaN(id_producto) || isNaN(cantidad)) {
+                    throw new Error('Datos del carrito inválidos');
+                }
+
+                return {
+                    id_producto,
+                    cantidad
+                };
+            });
+
             const pedido = {
                 id_usuario: userData.id_usuario,
-                productos: cart.map(item => ({
-                    id_producto: item.id,
-                    cantidad: item.quantity
-                })),
+                productos: productosFormateados,
                 ...datos
             };
 
-            console.log('Datos del pedido a enviar:', pedido); // Para depuración
+            // Para depuración
+            console.log('Estructura del carrito original:', cart);
+            console.log('Productos formateados:', productosFormateados);
+            console.log('Datos del pedido completo:', pedido);
 
             const pedidoResponse = await fetch('https://vision-digital-api.vercel.app/api/pedidos', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}` // Por si acaso necesitas el token en el header
+                },
                 body: JSON.stringify(pedido)
             });
 
@@ -60,6 +80,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.error('Detalles del error:', errorDetails);
                 throw new Error(errorDetails.error || 'Error al crear el pedido');
             }
+
+            const respuestaExitosa = await pedidoResponse.json();
+            console.log('Respuesta exitosa:', respuestaExitosa);
 
             alert('Pedido creado exitosamente');
             localStorage.removeItem('cart');
