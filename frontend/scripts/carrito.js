@@ -87,12 +87,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         } catch (error) {
             console.error('Error:', error);
-            localStorage.removeItem('authToken'); // Limpiar token inválido
-            checkoutContainer.innerHTML = `
-                <div class="text-center mt-3">
-                    <p>Su sesión ha expirado. Por favor, vuelva a iniciar sesión</p>
-                    <a href="login/login.html" class="btn btn-primary">Iniciar Sesión</a>
-                </div>`;
+            
         }
     }
 
