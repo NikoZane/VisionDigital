@@ -1,73 +1,60 @@
 document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('shippingForm');
-    
+
     form.addEventListener('submit', async (event) => {
         event.preventDefault();
         const token = localStorage.getItem('authToken');
-        
+
         if (!token) {
             alert('Debe iniciar sesión para continuar');
             window.location.href = 'login/login.html';
             return;
         }
-
+        
         const cart = JSON.parse(localStorage.getItem('cart')) || [];
-if (cart.some(item => !item.id && !item.productId)) {
-    alert('Hay productos en el carrito sin ID. No se puede procesar el pedido.');
-    return;
-}
-
+        
         if (cart.length === 0) {
             alert('El carrito está vacío');
             return;
         }
-
+        
         const datos = {
             direccion: document.getElementById('direccion').value,
             codigo_postal: document.getElementById('codigoPostal').value,
             ciudad: document.getElementById('ciudad').value,
             provincia: document.getElementById('provincia').value
         };
-
+        
         try {
             const validacionResponse = await fetch('https://vision-digital-api.vercel.app/api/usuarios/validar', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ token })
             });
-
+            
             if (!validacionResponse.ok) {
                 throw new Error('Token inválido');
             }
-
-            const userData = await validacionResponse.json();
             
-            // Modificación en la transformación de productos
-          const productosFormateados = cart.map(item => {
-    // Asegúrate de que todos los campos necesarios estén presentes
-    if (!item.id && !item.productId) {
-        throw new Error('ID de producto no encontrado');
-    }
-    return {
-        id_producto: item.id || parseInt(item.productId),
-        cantidad: parseInt(item.quantity || 1),
-        precio: parseFloat(item.price || 0)
-    };
-});
+            const userData = await validacionResponse.json();
 
-            // Validación adicional
-            if (productosFormateados.some(prod => !prod.id_producto)) {
-                throw new Error('Algunos productos no tienen ID válido');
-            }
-
+            // Modificación en la transformación de productos (sin ID)
+            const productosFormateados = cart.map(item => {
+                return {
+                    nombre: item.name,
+                    cantidad: parseInt(item.quantity || 1),
+                    precio: parseFloat(item.price || 0)
+                };
+            });
+            
             const pedido = {
                 id_usuario: userData.id_usuario,
                 productos: productosFormateados,
                 ...datos
             };
-
+            
             console.log('Pedido a enviar:', pedido);
-
+            
             const pedidoResponse = await fetch('https://vision-digital-api.vercel.app/api/pedidos', {
                 method: 'POST',
                 headers: {
@@ -76,20 +63,21 @@ if (cart.some(item => !item.id && !item.productId)) {
                 },
                 body: JSON.stringify(pedido)
             });
-
+            
             if (!pedidoResponse.ok) {
                 const errorDetails = await pedidoResponse.json();
                 console.log('Detalles del error:', errorDetails);
                 throw new Error(errorDetails.error || 'Error al crear el pedido');
             }
-
+            
             alert('Pedido creado exitosamente');
             localStorage.removeItem('cart');
             window.location.href = 'index.html';
-
+            
         } catch (error) {
             console.error('Error:', error);
             alert('Error al procesar el pedido: ' + error.message);
         }
     });
 });
+
