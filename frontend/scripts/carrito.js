@@ -3,50 +3,66 @@ document.addEventListener('DOMContentLoaded', () => {
     const totalElement = document.getElementById('cart-total');
     const checkoutContainer = document.getElementById('button-checkout');
 
-   function renderCart() {
-    let cart = JSON.parse(localStorage.getItem('cart')) || [];
-    cartContainer.innerHTML = '';
-    let total = 0;
+    function addToCart(product) {
+        const { id, name, price } = product;
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+        const existingItem = cart.find(item => item.name === name);
 
-    cart.forEach(item => {
-        const { id, name, price, quantity } = item;
-        const priceFloat = typeof price === 'string' ? parseFloat(price) : price;
-        const itemTotal = priceFloat * quantity;
-        total += itemTotal;
+        if (existingItem) {
+            existingItem.quantity++;
+        } else {
+            cart.push({ id, name, price, quantity: 1 });
+        }
 
-        const cartItem = document.createElement('div');
-        cartItem.className = 'cart-item d-flex justify-content-between align-items-center mb-3';
-        cartItem.innerHTML = `
-            <div class="d-flex align-items-center">
-                <div>
-                    <h5>${name}</h5>
-                    <p class="mb-0">Descripción breve del producto.</p>
+        localStorage.setItem('cart', JSON.stringify(cart));
+        renderCart();
+        verificarCarritoYSesion();
+    }
+
+    function renderCart() {
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+        cartContainer.innerHTML = '';
+        let total = 0;
+
+        cart.forEach(item => {
+            const { id, name, price, quantity } = item;
+            const priceFloat = typeof price === 'string' ? parseFloat(price) : price;
+            const itemTotal = priceFloat * quantity;
+            total += itemTotal;
+
+            const cartItem = document.createElement('div');
+            cartItem.className = 'cart-item d-flex justify-content-between align-items-center mb-3';
+            cartItem.innerHTML = `
+                <div class="d-flex align-items-center">
+                    <div>
+                        <h5>${name}</h5>
+                        <p class="mb-0">Descripción breve del producto.</p>
+                    </div>
                 </div>
-            </div>
-            <div class="d-flex align-items-center">
-                <span class="mr-2">$${priceFloat}</span>
-                <span class="mr-2">x${quantity}</span>
-                <button class="btn btn-sm btn-danger" data-name="${name}" data-id="${id}">
-                    <i class="fas fa-trash-alt"></i>
-                </button>
-            </div>`;
-        cartContainer.appendChild(cartItem);
-    });
-
-    totalElement.textContent = `$${total}`;
-
-    document.querySelectorAll('.btn-danger').forEach(button => {
-        button.addEventListener('click', () => {
-            const name = button.getAttribute('data-name');
-            const id = button.getAttribute('data-id');
-            let cart = JSON.parse(localStorage.getItem('cart')) || [];
-            cart = cart.filter(item => item.name !== name && item.id !== id);
-            localStorage.setItem('cart', JSON.stringify(cart));
-            renderCart();
-            verificarCarritoYSesion();
+                <div class="d-flex align-items-center">
+                    <span class="mr-2">$${priceFloat}</span>
+                    <span class="mr-2">x${quantity}</span>
+                    <button class="btn btn-sm btn-danger" data-name="${name}" data-id="${id}">
+                        <i class="fas fa-trash-alt"></i>
+                    </button>
+                </div>`;
+            cartContainer.appendChild(cartItem);
         });
-    });
-}
+
+        totalElement.textContent = `$${total}`;
+
+        document.querySelectorAll('.btn-danger').forEach(button => {
+            button.addEventListener('click', () => {
+                const name = button.getAttribute('data-name');
+                const id = button.getAttribute('data-id');
+                let cart = JSON.parse(localStorage.getItem('cart')) || [];
+                cart = cart.filter(item => item.name !== name && item.id !== id);
+                localStorage.setItem('cart', JSON.stringify(cart));
+                renderCart();
+                verificarCarritoYSesion();
+            });
+        });
+    }
 
     async function verificarCarritoYSesion() {
         const cart = JSON.parse(localStorage.getItem('cart')) || [];
@@ -88,7 +104,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         } catch (error) {
             console.error('Error:', error);
-            
         }
     }
 
