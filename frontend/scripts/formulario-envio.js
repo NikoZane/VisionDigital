@@ -12,7 +12,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         const cart = JSON.parse(localStorage.getItem('cart')) || [];
-        console.log('Carrito original:', cart);
+if (cart.some(item => !item.id && !item.productId)) {
+    alert('Hay productos en el carrito sin ID. No se puede procesar el pedido.');
+    return;
+}
 
         if (cart.length === 0) {
             alert('El carrito está vacío');
@@ -40,18 +43,17 @@ document.addEventListener('DOMContentLoaded', () => {
             const userData = await validacionResponse.json();
             
             // Modificación en la transformación de productos
-            const productosFormateados = cart.map(item => {
-                // Asegúrate de que todos los campos necesarios estén presentes
-                if (!item.id && !item.productId) {
-                    throw new Error('ID de producto no encontrado');
-                }
-
-                return {
-                    id_producto: item.id || parseInt(item.productId),
-                    cantidad: parseInt(item.quantity || 1),
-                    precio: parseFloat(item.price || 0)  // Agregado el precio si el API lo requiere
-                };
-            });
+          const productosFormateados = cart.map(item => {
+    // Asegúrate de que todos los campos necesarios estén presentes
+    if (!item.id && !item.productId) {
+        throw new Error('ID de producto no encontrado');
+    }
+    return {
+        id_producto: item.id || parseInt(item.productId),
+        cantidad: parseInt(item.quantity || 1),
+        precio: parseFloat(item.price || 0)
+    };
+});
 
             // Validación adicional
             if (productosFormateados.some(prod => !prod.id_producto)) {
