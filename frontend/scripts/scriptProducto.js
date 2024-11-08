@@ -59,7 +59,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (quantity > stock) {
                     alert('No puedes añadir más productos de los que hay en stock.');
                 } else {
-                    addToCart({ name: nombre_producto, price: precio, quantity });
+                    addToCart({ id: productId, name: nombre_producto, price: precio, quantity });
                 }
             });
         })
@@ -67,7 +67,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function addToCart(item) {
         let cart = JSON.parse(localStorage.getItem('cart')) || [];
-        const existingItem = cart.find(cartItem => cartItem.name === item.name);
+        const existingItem = cart.find(cartItem => cartItem.id === item.id);
         if (existingItem) {
             existingItem.quantity += item.quantity;
         } else {
