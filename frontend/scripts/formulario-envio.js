@@ -38,9 +38,10 @@ document.addEventListener('DOMContentLoaded', () => {
             
             const userData = await validacionResponse.json();
 
-            // Modificación en la transformación de productos (sin ID)
+            // Transformación de productos (con ID temporal)
             const productosFormateados = cart.map(item => {
                 return {
+                    id_producto: 0,  // ID temporal en caso de que la API lo requiera
                     nombre: item.name,
                     cantidad: parseInt(item.quantity || 1),
                     precio: parseFloat(item.price || 0)
@@ -80,4 +81,5 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
+
 
