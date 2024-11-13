@@ -163,15 +163,14 @@ function actualizar(id2, div, product) {
     div.appendChild(form);
 
     // Manejador del evento click para el botón
-    boton.addEventListener('click', (event) => {
+  boton.addEventListener('click', (event) => {
         event.preventDefault();
         const producto = {};
 
         if (nombre.value.trim() !== '') producto.nombre_producto = nombre.value;
         if (precio.value.trim() !== '') producto.precio = parseFloat(precio.value);
-        if (cantidad.value.trim() !== '') producto.stock = parseInt(cantidad.value);
-
-
+        // Cambiado para permitir explícitamente el valor 0
+        if (cantidad.value !== '') producto.stock = parseInt(cantidad.value);
         if (detalleSelect.value.trim() !== '') producto.detalle = detalleSelect.value;
 
         actualizarProducto(id2, producto);
