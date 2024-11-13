@@ -26,7 +26,7 @@ const Pedido = bd.define('Pedido', {
   },
   ciudad: {
     type: DataTypes.STRING,
-    allowNull: false
+    allowNull: true 
   },
   provincia: {
     type: DataTypes.STRING,
