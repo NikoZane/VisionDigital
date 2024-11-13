@@ -10,13 +10,9 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
-    <!-- jsPDF library -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
     <style>
         body {
             background-color: #f8f9fa;
-            padding-bottom: 80px;
         }
 
         nav {
@@ -40,58 +36,6 @@
             background-color: #ffa755;
             color: white;
             font-weight: bold;
-        }
-
-        .floating-buttons {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            z-index: 1000;
-            display: flex;
-            gap: 10px;
-        }
-
-        .btn-floating {
-            background-color: #ffa755;
-            color: white;
-            border: none;
-            padding: 15px 25px;
-            border-radius: 25px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            cursor: pointer;
-        }
-
-        .btn-floating:hover {
-            background-color: #ff9635;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
-            color: white;
-        }
-
-        .status-badge {
-            padding: 5px 10px;
-            border-radius: 15px;
-            font-size: 0.9em;
-            font-weight: 500;
-        }
-
-        .status-entregado {
-            background-color: #28a745;
-            color: white;
-        }
-
-        .status-pendiente {
-            background-color: #ffc107;
-            color: black;
-        }
-
-        .status-en-proceso {
-            background-color: #17a2b8;
-            color: white;
         }
     </style>
 </head>
@@ -119,78 +63,42 @@
         </div>
     </div>
 
-    <!-- Botones flotantes -->
-    <div class="floating-buttons">
-        <button onclick="generatePDF()" class="btn-floating">
-            <i class="bi bi-download"></i>
-            Descargar PDF
-        </button>
-    </div>
-
     <!-- Bootstrap JS and Popper.js -->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
 
+    <!-- Script para cargar los pedidos y agruparlos por fecha -->
     <script>
-        let allPedidos = [];
-        let productosNombres = {};
-
         document.addEventListener('DOMContentLoaded', function () {
             const pedidoList = document.getElementById('pedido-list');
 
-            // Fetch de todos los pedidos sin filtrar por estado
-            fetch('https://vision-digital-api.vercel.app/api/pedidos')
-                .then(response => response.json())
-                .then(data => {
-                    // Guardar todos los pedidos
-                    allPedidos = data;
-                    
-                    if (data.length === 0) {
-                        pedidoList.innerHTML = `<div class="alert alert-info text-center" role="alert">
-                            No hay pedidos registrados.
-                        </div>`;
-                    } else {
-                        const pedidosPorFecha = data.reduce((acc, pedido) => {
-                            let fecha;
-                            try {
-                                fecha = new Date(pedido.fecha).toLocaleDateString('es-ES') || "Fecha desconocida";
-                            } catch {
-                                fecha = "Fecha desconocida";
-                            }
+            // Fetch de todos los pedidos desde la API
+           
+                               fetch('https://vision-digital-api.vercel.app/api/pedidos')
+    .then(response => response.json())
+    .then(data => {
+        if (data.length === 0) {
+            // Si no hay pedidos, mostrar un mensaje
+            pedidoList.innerHTML = `<div class="alert alert-info text-center" role="alert">
+                No hay pedidos registrados.
+            </div>`;
+        } else {
+            // Agrupar pedidos por fecha
+            const pedidosPorFecha = data.reduce((acc, pedido) => {
+                let fecha;
+                try {
+                    // Validar o transformar el formato de fecha
+                    fecha = new Date(pedido.fecha).toLocaleDateString('es-ES') || "Fecha desconocida";
+                } catch {
+                    fecha = "Fecha desconocida";
+                }
 
-                            if (!acc[fecha]) acc[fecha] = [];
-                            acc[fecha].push(pedido);
-                            return acc;
-                        }, {});
+                if (!acc[fecha]) acc[fecha] = [];
+                acc[fecha].push(pedido);
+                return acc;
+            }, {});
 
-                        displayPedidos(pedidosPorFecha);
-                    }
-                })
-                .catch(error => {
-                    console.error('Error al cargar los pedidos:', error);
-                    pedidoList.innerHTML = `<div class="alert alert-danger text-center" role="alert">
-                        Error al cargar los pedidos. Intenta nuevamente más tarde.
-                    </div>`;
-                });
-        });
-
-        function getStatusBadgeClass(estado) {
-            switch (estado.toLowerCase()) {
-                case 'entregado':
-                    return 'status-entregado';
-                case 'pendiente':
-                    return 'status-pendiente';
-                case 'en proceso':
-                    return 'status-en-proceso';
-                default:
-                    return '';
-            }
-        }
-
-        function displayPedidos(pedidosPorFecha) {
-            const pedidoList = document.getElementById('pedido-list');
-            pedidoList.innerHTML = '';
-
+            // Crear tarjetas para cada grupo de pedidos por fecha
             for (const [fecha, pedidos] of Object.entries(pedidosPorFecha)) {
                 const fechaSection = document.createElement('div');
                 fechaSection.className = 'mb-4';
@@ -214,28 +122,27 @@
 
                     const productIds = productos.map(prod => prod.id_producto).join(',');
 
+                    // Llama a la API para obtener los nombres de los productos
                     fetch(`https://vision-digital-api.vercel.app/api/productos?id=${productIds}`)
                         .then(response => response.json())
                         .then(productData => {
+                            const productMap = {};
                             productData.forEach(prod => {
-                                productosNombres[prod.id_producto] = prod.nombre_producto;
+                                productMap[prod.id_producto] = prod.nombre_producto;
                             });
 
                             const productosDisplay = Array.isArray(productos)
-                                ? productos.map(prod => `Nombre: ${productosNombres[prod.id_producto] || 'Desconocido'} (Cantidad: ${prod.cantidad})`).join(', ')
+                                ? productos.map(prod => `Nombre: ${productMap[prod.id_producto] || 'Desconocido'} (Cantidad: ${prod.cantidad})`).join(', ')
                                 : 'Sin productos';
 
                             const cantidadTotal = Array.isArray(productos)
                                 ? productos.reduce((total, prod) => total + prod.cantidad, 0)
                                 : 0;
 
-                            const statusBadgeClass = getStatusBadgeClass(pedido.estado);
-
                             pedidoCard.innerHTML = `
                                 <div class="card shadow">
-                                    <div class="card-header d-flex justify-content-between align-items-center">
-                                        <span>Pedido #${pedido.id_pedido}</span>
-                                        <span class="status-badge ${statusBadgeClass}">${pedido.estado}</span>
+                                    <div class="card-header">
+                                        Pedido #${pedido.id_pedido}
                                     </div>
                                     <div class="card-body">
                                         <p class="card-text"><strong>Cliente ID:</strong> ${pedido.id_usuario}</p>
@@ -246,7 +153,7 @@
                                         <p class="card-text"><strong>Código Postal:</strong> ${pedido.codigo_postal}</p>
                                         <p class="card-text"><strong>Ciudad:</strong> ${pedido.ciudad}</p>
                                         <p class="card-text"><strong>Provincia:</strong> ${pedido.provincia}</p>
-                                        <p class="card-text"><strong>Fecha:</strong> ${new Date(pedido.fecha).toLocaleString('es-ES')}</p>
+                                        <p class="card-text"><strong>Estado:</strong> ${pedido.estado}</p>
                                     </div>
                                 </div>
                             `;
@@ -261,8 +168,14 @@
                 pedidoList.appendChild(fechaSection);
             }
         }
-
-        function generatePDF() {
+    })
+    .catch(error => {
+        console.error('Error al cargar los pedidos:', error);
+        pedidoList.innerHTML = `<div class="alert alert-danger text-center" role="alert">
+            Error al cargar los pedidos. Intenta nuevamente más tarde.
+        </div>`;
+    });
+ function generatePDF() {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
 
@@ -325,7 +238,7 @@
 
             // Guardar el PDF
             doc.save('historial-pedidos.pdf');
-        }
+        });
     </script>
 </body>
 
