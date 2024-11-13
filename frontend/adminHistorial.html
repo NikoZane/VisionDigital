@@ -220,26 +220,30 @@ function generatePDF() {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
 
-    // Crear una estructura para los datos de la tabla con solo los campos ID, Total y Dirección
+    // Crear una estructura para los datos de la tabla con los campos ID, Total, Dirección, Código Postal y Provincia
     const tableData = allPedidos.map(pedido => {
         // Solo incluir los campos que necesitamos
         return [
             pedido.id_pedido,    // ID del pedido
             `$${pedido.total}`,  // Total del pedido
-            pedido.direccion     // Dirección del pedido
+            pedido.direccion,    // Dirección del pedido
+            pedido.codigo_postal, // Código postal
+            pedido.provincia     // Provincia
         ];
     });
 
     // Configuración de la tabla en el PDF
     doc.autoTable({
-        head: [['ID', 'Total', 'Dirección']],  // Encabezado de la tabla con los campos que necesitamos
+        head: [['ID', 'Total', 'Dirección', 'Código Postal', 'Provincia']],  // Encabezado de la tabla con los campos que necesitamos
         body: tableData,
         startY: 25,
         styles: { fontSize: 8, cellPadding: 2 }, // Reducir tamaño de fuente y espaciado de celdas
         columnStyles: {
             0: { cellWidth: 20 },  // Ancho de la columna ID
             1: { cellWidth: 40 },  // Ancho de la columna Total
-            2: { cellWidth: 80 }   // Ancho de la columna Dirección
+            2: { cellWidth: 80 },  // Ancho de la columna Dirección
+            3: { cellWidth: 30 },  // Ancho de la columna Código Postal
+            4: { cellWidth: 30 }   // Ancho de la columna Provincia
         },
         margin: { top: 15, left: 10, right: 10 }, // Margen de la tabla
         didDrawPage: function (data) {
@@ -256,7 +260,6 @@ function generatePDF() {
     // Guardar el PDF
     doc.save('historial-pedidos.pdf');
 }
-
 
 
     </script>
