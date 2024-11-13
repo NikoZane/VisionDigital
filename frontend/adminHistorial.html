@@ -220,55 +220,26 @@ function generatePDF() {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
 
-    // Crear una estructura para los datos de la tabla
+    // Crear una estructura para los datos de la tabla con solo los campos ID, Total y Dirección
     const tableData = allPedidos.map(pedido => {
-        let productos = [];
-        try {
-            const cleanedProductos = pedido.productos
-                .replace(/^\s*"/, '')
-                .replace(/"\s*$/, '')
-                .replace(/\\/g, '');
-            productos = JSON.parse(cleanedProductos);
-        } catch (error) {
-            console.error('Error al parsear productos:', error);
-        }
-
-        const productosStr = Array.isArray(productos)
-            ? productos.map(prod => `${prod.nombre_producto || 'Desconocido'} (${prod.cantidad})`).join('\n')
-            : 'Sin productos';
-
-        // Crear una fila con toda la información
+        // Solo incluir los campos que necesitamos
         return [
-            pedido.id_pedido,
-            new Date(pedido.fecha).toLocaleDateString('es-ES'),
-            pedido.id_usuario,
-            productosStr,
-            `$${pedido.total}`,
-            pedido.estado,
-            pedido.direccion,  // Agregar dirección
-            pedido.codigo_postal, // Agregar código postal
-            pedido.ciudad, // Agregar ciudad
-            pedido.provincia // Agregar provincia
+            pedido.id_pedido,    // ID del pedido
+            `$${pedido.total}`,  // Total del pedido
+            pedido.direccion     // Dirección del pedido
         ];
     });
 
     // Configuración de la tabla en el PDF
     doc.autoTable({
-        head: [['ID', 'Fecha', 'Cliente', 'Productos', 'Total', 'Estado', 'Dirección', 'Código Postal', 'Ciudad', 'Provincia']],
+        head: [['ID', 'Total', 'Dirección']],  // Encabezado de la tabla con los campos que necesitamos
         body: tableData,
         startY: 25,
-        styles: { fontSize: 6, cellPadding: 2 }, // Reducir tamaño de fuente
+        styles: { fontSize: 8, cellPadding: 2 }, // Reducir tamaño de fuente y espaciado de celdas
         columnStyles: {
-            0: { cellWidth: 15 },
-            1: { cellWidth: 20 },
-            2: { cellWidth: 15 },
-            3: { cellWidth: 50 },
-            4: { cellWidth: 20 },
-            5: { cellWidth: 15 },
-            6: { cellWidth: 40 },
-            7: { cellWidth: 25 },
-            8: { cellWidth: 25 },
-            9: { cellWidth: 25 }
+            0: { cellWidth: 20 },  // Ancho de la columna ID
+            1: { cellWidth: 40 },  // Ancho de la columna Total
+            2: { cellWidth: 80 }   // Ancho de la columna Dirección
         },
         margin: { top: 15, left: 10, right: 10 }, // Margen de la tabla
         didDrawPage: function (data) {
@@ -279,19 +250,13 @@ function generatePDF() {
                 doc.internal.pageSize.width - 20,
                 doc.internal.pageSize.height - 10
             );
-        },
-        // Permitir que la tabla se divida en varias páginas si es necesario
-        didParseCell: function (data) {
-            if (data.row.index === tableData.length - 1) {
-                // Si estamos en la última fila, aseguramos que todo quede bien
-                doc.addPage();
-            }
         }
     });
 
     // Guardar el PDF
     doc.save('historial-pedidos.pdf');
 }
+
 
 
     </script>
