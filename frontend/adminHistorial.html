@@ -6,9 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Historial de Pedidos</title>
-    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
     <style>
         body {
@@ -37,6 +35,27 @@
             color: white;
             font-weight: bold;
         }
+
+        .download-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+            background-color: #ffa755;
+            border: none;
+        }
+
+        .download-btn:hover {
+            background-color: #ff9635;
+        }
+
+        .filter-section {
+            background-color: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
     </style>
 </head>
 
@@ -58,126 +77,220 @@
     <!-- Main Content -->
     <div class="container mt-4">
         <h2 class="mb-4 text-center">Historial de Pedidos</h2>
-        <div id="pedido-list">
-            <!-- Los pedidos se cargarán aquí divididos por días -->
+
+        <!-- Filtros -->
+        <div class="filter-section">
+            <div class="row">
+                <div class="col-md-4">
+                    <label for="dateFrom" class="form-label">Desde:</label>
+                    <input type="date" class="form-control" id="dateFrom">
+                </div>
+                <div class="col-md-4">
+                    <label for="dateTo" class="form-label">Hasta:</label>
+                    <input type="date" class="form-control" id="dateTo">
+                </div>
+                <div class="col-md-4">
+                    <label for="estadoFilter" class="form-label">Estado:</label>
+                    <select class="form-select" id="estadoFilter">
+                        <option value="">Todos</option>
+                        <option value="pendiente">Pendiente</option>
+                        <option value="en_proceso">En Proceso</option>
+                        <option value="entregado">Entregado</option>
+                        <option value="cancelado">Cancelado</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-12">
+                    <button class="btn btn-primary" onclick="aplicarFiltros()">
+                        <i class="bi bi-funnel"></i> Aplicar Filtros
+                    </button>
+                </div>
+            </div>
         </div>
+
+        <div id="pedido-list">
+            <!-- Los pedidos se cargarán aquí -->
+        </div>
+
+        <!-- Botón de Descarga -->
+        <button class="btn btn-lg btn-primary download-btn" onclick="descargarPedidos()">
+            <i class="bi bi-download"></i> Descargar Historial
+        </button>
     </div>
 
     <!-- Bootstrap JS and Popper.js -->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
 
-    <!-- Script para cargar los pedidos y agruparlos por fecha -->
     <script>
+        let todosLosPedidos = [];
+
         document.addEventListener('DOMContentLoaded', function () {
+            cargarPedidos();
+        });
+
+        function cargarPedidos() {
             const pedidoList = document.getElementById('pedido-list');
 
-            // Fetch de todos los pedidos desde la API
-           
-                               fetch('https://vision-digital-api.vercel.app/api/pedidos')
-    .then(response => response.json())
-    .then(data => {
-        if (data.length === 0) {
-            // Si no hay pedidos, mostrar un mensaje
-            pedidoList.innerHTML = `<div class="alert alert-info text-center" role="alert">
-                No hay pedidos registrados.
-            </div>`;
-        } else {
-            // Agrupar pedidos por fecha
-            const pedidosPorFecha = data.reduce((acc, pedido) => {
-                let fecha;
-                try {
-                    // Validar o transformar el formato de fecha
-                    fecha = new Date(pedido.fecha).toLocaleDateString('es-ES') || "Fecha desconocida";
-                } catch {
-                    fecha = "Fecha desconocida";
-                }
+            // Fetch de todos los pedidos desde la API del historial
+            fetch('https://vision-digital-api.vercel.app/api/historial-pedidos')
+                .then(response => response.json())
+                .then(data => {
+                    todosLosPedidos = data;
+                    mostrarPedidos(data);
+                })
+                .catch(error => {
+                    console.error('Error al cargar los pedidos:', error);
+                    pedidoList.innerHTML = `<div class="alert alert-danger text-center" role="alert">
+                        Error al cargar los pedidos. Intenta nuevamente más tarde.
+                    </div>`;
+                });
+        }
 
+        function mostrarPedidos(pedidos) {
+            const pedidoList = document.getElementById('pedido-list');
+            pedidoList.innerHTML = '';
+
+            if (pedidos.length === 0) {
+                pedidoList.innerHTML = `<div class="alert alert-info text-center" role="alert">
+                    No hay pedidos que coincidan con los filtros seleccionados.
+                </div>`;
+                return;
+            }
+
+            // Agrupar pedidos por fecha
+            const pedidosPorFecha = agruparPedidosPorFecha(pedidos);
+            
+            // Mostrar pedidos agrupados
+            for (const [fecha, pedidosDelDia] of Object.entries(pedidosPorFecha)) {
+                mostrarPedidosDelDia(fecha, pedidosDelDia, pedidoList);
+            }
+        }
+
+        function agruparPedidosPorFecha(pedidos) {
+            return pedidos.reduce((acc, pedido) => {
+                const fecha = new Date(pedido.fecha).toLocaleDateString('es-ES');
                 if (!acc[fecha]) acc[fecha] = [];
                 acc[fecha].push(pedido);
                 return acc;
             }, {});
-
-            // Crear tarjetas para cada grupo de pedidos por fecha
-            for (const [fecha, pedidos] of Object.entries(pedidosPorFecha)) {
-                const fechaSection = document.createElement('div');
-                fechaSection.className = 'mb-4';
-                fechaSection.innerHTML = `<h4 class="mb-3">${fecha}</h4>`;
-
-                pedidos.forEach(pedido => {
-                    const pedidoCard = document.createElement('div');
-                    pedidoCard.className = 'col-md-4 mb-4';
-
-                    let productos = [];
-                    try {
-                        const cleanedProductos = pedido.productos
-                            .replace(/^\s*"/, '')
-                            .replace(/"\s*$/, '')
-                            .replace(/\\/g, '');
-
-                        productos = JSON.parse(cleanedProductos);
-                    } catch (error) {
-                        console.error('Error al parsear productos:', error);
-                    }
-
-                    const productIds = productos.map(prod => prod.id_producto).join(',');
-
-                    // Llama a la API para obtener los nombres de los productos
-                    fetch(`https://vision-digital-api.vercel.app/api/productos?id=${productIds}`)
-                        .then(response => response.json())
-                        .then(productData => {
-                            const productMap = {};
-                            productData.forEach(prod => {
-                                productMap[prod.id_producto] = prod.nombre_producto;
-                            });
-
-                            const productosDisplay = Array.isArray(productos)
-                                ? productos.map(prod => `Nombre: ${productMap[prod.id_producto] || 'Desconocido'} (Cantidad: ${prod.cantidad})`).join(', ')
-                                : 'Sin productos';
-
-                            const cantidadTotal = Array.isArray(productos)
-                                ? productos.reduce((total, prod) => total + prod.cantidad, 0)
-                                : 0;
-
-                            pedidoCard.innerHTML = `
-                                <div class="card shadow">
-                                    <div class="card-header">
-                                        Pedido #${pedido.id_pedido}
-                                    </div>
-                                    <div class="card-body">
-                                        <p class="card-text"><strong>Cliente ID:</strong> ${pedido.id_usuario}</p>
-                                        <p class="card-text"><strong>Productos:</strong> ${productosDisplay}</p>
-                                        <p class="card-text"><strong>Cantidad Total:</strong> ${cantidadTotal}</p>
-                                        <p class="card-text"><strong>Total:</strong> $${pedido.total}</p>
-                                        <p class="card-text"><strong>Dirección:</strong> ${pedido.direccion}</p>
-                                        <p class="card-text"><strong>Código Postal:</strong> ${pedido.codigo_postal}</p>
-                                        <p class="card-text"><strong>Ciudad:</strong> ${pedido.ciudad}</p>
-                                        <p class="card-text"><strong>Provincia:</strong> ${pedido.provincia}</p>
-                                        <p class="card-text"><strong>Estado:</strong> ${pedido.estado}</p>
-                                    </div>
-                                </div>
-                            `;
-
-                            fechaSection.appendChild(pedidoCard);
-                        })
-                        .catch(error => {
-                            console.error('Error al obtener nombres de productos:', error);
-                        });
-                });
-
-                pedidoList.appendChild(fechaSection);
-            }
         }
-    })
-    .catch(error => {
-        console.error('Error al cargar los pedidos:', error);
-        pedidoList.innerHTML = `<div class="alert alert-danger text-center" role="alert">
-            Error al cargar los pedidos. Intenta nuevamente más tarde.
-        </div>`;
-    });
 
-        });
+        function mostrarPedidosDelDia(fecha, pedidos, container) {
+            const fechaSection = document.createElement('div');
+            fechaSection.className = 'mb-4';
+            fechaSection.innerHTML = `<h4 class="mb-3">${fecha}</h4>`;
+
+            const row = document.createElement('div');
+            row.className = 'row';
+
+            pedidos.forEach(pedido => {
+                const col = document.createElement('div');
+                col.className = 'col-md-4 mb-4';
+                
+                let productosHTML = '';
+                if (pedido.productos && Array.isArray(pedido.productos)) {
+                    productosHTML = pedido.productos
+                        .map(prod => `${prod.nombre} (${prod.cantidad})`)
+                        .join('<br>');
+                }
+
+                col.innerHTML = `
+                    <div class="card shadow">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <span>Pedido #${pedido.id_pedido}</span>
+                            <span class="badge ${getEstadoBadgeClass(pedido.estado)}">${pedido.estado}</span>
+                        </div>
+                        <div class="card-body">
+                            <p class="card-text"><strong>Cliente:</strong> ${pedido.nombre_cliente}</p>
+                            <p class="card-text"><strong>Productos:</strong><br>${productosHTML}</p>
+                            <p class="card-text"><strong>Total:</strong> $${pedido.total}</p>
+                            <p class="card-text"><strong>Dirección:</strong> ${pedido.direccion}</p>
+                            <small class="text-muted">Fecha: ${new Date(pedido.fecha).toLocaleString()}</small>
+                        </div>
+                    </div>
+                `;
+
+                row.appendChild(col);
+            });
+
+            fechaSection.appendChild(row);
+            container.appendChild(fechaSection);
+        }
+
+        function getEstadoBadgeClass(estado) {
+            const clases = {
+                'pendiente': 'bg-warning',
+                'en_proceso': 'bg-info',
+                'entregado': 'bg-success',
+                'cancelado': 'bg-danger'
+            };
+            return clases[estado] || 'bg-secondary';
+        }
+
+        function aplicarFiltros() {
+            const dateFrom = document.getElementById('dateFrom').value;
+            const dateTo = document.getElementById('dateTo').value;
+            const estado = document.getElementById('estadoFilter').value;
+
+            let pedidosFiltrados = todosLosPedidos;
+
+            if (dateFrom) {
+                pedidosFiltrados = pedidosFiltrados.filter(pedido => 
+                    new Date(pedido.fecha) >= new Date(dateFrom)
+                );
+            }
+
+            if (dateTo) {
+                pedidosFiltrados = pedidosFiltrados.filter(pedido => 
+                    new Date(pedido.fecha) <= new Date(dateTo)
+                );
+            }
+
+            if (estado) {
+                pedidosFiltrados = pedidosFiltrados.filter(pedido => 
+                    pedido.estado === estado
+                );
+            }
+
+            mostrarPedidos(pedidosFiltrados);
+        }
+
+        function descargarPedidos() {
+            const pedidosFiltrados = [...todosLosPedidos]; // Usar los pedidos actualmente mostrados
+            
+            // Formatear datos para CSV
+            const csvContent = formatearPedidosParaCSV(pedidosFiltrados);
+            
+            // Crear y descargar el archivo
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `historial_pedidos_${new Date().toISOString().slice(0,10)}.csv`;
+            link.click();
+        }
+
+        function formatearPedidosParaCSV(pedidos) {
+            const headers = ['ID Pedido', 'Fecha', 'Cliente', 'Productos', 'Total', 'Estado', 'Dirección'];
+            const rows = pedidos.map(pedido => {
+                const productos = Array.isArray(pedido.productos) 
+                    ? pedido.productos.map(p => `${p.nombre}(${p.cantidad})`).join('; ')
+                    : '';
+                
+                return [
+                    pedido.id_pedido,
+                    new Date(pedido.fecha).toLocaleString(),
+                    pedido.nombre_cliente,
+                    productos,
+                    pedido.total,
+                    pedido.estado,
+                    pedido.direccion
+                ].map(value => `"${value}"`).join(',');
+            });
+
+            return [headers.join(','), ...rows].join('\n');
+        }
     </script>
 </body>
-
 </html>
