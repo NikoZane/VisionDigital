@@ -169,7 +169,8 @@ function actualizar(id2, div, product) {
 
         if (nombre.value.trim() !== '') producto.nombre_producto = nombre.value;
         if (precio.value.trim() !== '') producto.precio = parseFloat(precio.value);
-        if (cantidad.value !== '' || cantidad.value === '0') producto.stock = parseInt(cantidad.value, 10);
+        if (cantidad.value.trim() !== '') producto.stock = parseInt(cantidad.value);
+
 
         if (detalleSelect.value.trim() !== '') producto.detalle = detalleSelect.value;
 
