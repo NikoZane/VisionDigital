@@ -215,63 +215,75 @@
         });
 
         // Función para generar el PDF
-        function generatePDF() {
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
+ // Función para generar el PDF
+function generatePDF() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
 
-            const tableData = allPedidos.map(pedido => {
-                let productos = [];
-                try {
-                    const cleanedProductos = pedido.productos
-                        .replace(/^\s*"/, '')
-                        .replace(/"\s*$/, '')
-                        .replace(/\\/g, '');
-                    productos = JSON.parse(cleanedProductos);
-                } catch (error) {
-                    console.error('Error al parsear productos:', error);
-                }
-
-                const productosStr = Array.isArray(productos)
-                    ? productos.map(prod => `${prod.nombre_producto || 'Desconocido'} (${prod.cantidad})`).join('\n')
-                    : 'Sin productos';
-
-                return [
-                    pedido.id_pedido,
-                    new Date(pedido.fecha).toLocaleDateString('es-ES'),
-                    pedido.id_usuario,
-                    productosStr,
-                    `$${pedido.total}`,
-                    pedido.estado
-                ];
-            });
-
-            // Generar la tabla
-            doc.autoTable({
-                head: [['ID', 'Fecha', 'Cliente', 'Productos', 'Total', 'Estado']],
-                body: tableData,
-                startY: 25,
-                styles: { fontSize: 8 },
-                columnStyles: {
-                    0: { cellWidth: 20 },
-                    1: { cellWidth: 25 },
-                    2: { cellWidth: 20 },
-                    3: { cellWidth: 60 },
-                    4: { cellWidth: 25 },
-                    5: { cellWidth: 25 }
-                },
-                didDrawPage: function (data) {
-                    doc.setFontSize(10);
-                    doc.text(
-                        `Página ${doc.internal.getCurrentPageInfo().pageNumber}/${doc.internal.getNumberOfPages()}`,
-                        doc.internal.pageSize.width - 20,
-                        doc.internal.pageSize.height - 10
-                    );
-                }
-            });
-
-            // Guardar el PDF
-            doc.save('historial-pedidos.pdf');
+    // Crear una estructura para los datos de la tabla
+    const tableData = allPedidos.map(pedido => {
+        let productos = [];
+        try {
+            const cleanedProductos = pedido.productos
+                .replace(/^\s*"/, '')
+                .replace(/"\s*$/, '')
+                .replace(/\\/g, '');
+            productos = JSON.parse(cleanedProductos);
+        } catch (error) {
+            console.error('Error al parsear productos:', error);
         }
+
+        const productosStr = Array.isArray(productos)
+            ? productos.map(prod => `${prod.nombre_producto || 'Desconocido'} (${prod.cantidad})`).join('\n')
+            : 'Sin productos';
+
+        // Crear una fila con toda la información
+        return [
+            pedido.id_pedido,
+            new Date(pedido.fecha).toLocaleDateString('es-ES'),
+            pedido.id_usuario,
+            productosStr,
+            `$${pedido.total}`,
+            pedido.estado,
+            pedido.direccion,  // Agregar dirección
+            pedido.codigo_postal, // Agregar código postal
+            pedido.ciudad, // Agregar ciudad
+            pedido.provincia // Agregar provincia
+        ];
+    });
+
+    // Generar la tabla en el PDF
+    doc.autoTable({
+        head: [['ID', 'Fecha', 'Cliente', 'Productos', 'Total', 'Estado', 'Dirección', 'Código Postal', 'Ciudad', 'Provincia']],
+        body: tableData,
+        startY: 25,
+        styles: { fontSize: 8 },
+        columnStyles: {
+            0: { cellWidth: 20 },
+            1: { cellWidth: 25 },
+            2: { cellWidth: 20 },
+            3: { cellWidth: 60 },
+            4: { cellWidth: 25 },
+            5: { cellWidth: 25 },
+            6: { cellWidth: 40 },
+            7: { cellWidth: 30 },
+            8: { cellWidth: 30 },
+            9: { cellWidth: 30 }
+        },
+        didDrawPage: function (data) {
+            doc.setFontSize(10);
+            doc.text(
+                `Página ${doc.internal.getCurrentPageInfo().pageNumber}/${doc.internal.getNumberOfPages()}`,
+                doc.internal.pageSize.width - 20,
+                doc.internal.pageSize.height - 10
+            );
+        }
+    });
+
+    // Guardar el PDF
+    doc.save('historial-pedidos.pdf');
+}
+
     </script>
 </body>
 
