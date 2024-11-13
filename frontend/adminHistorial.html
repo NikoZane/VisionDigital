@@ -252,37 +252,47 @@ function generatePDF() {
         ];
     });
 
-    // Generar la tabla en el PDF
+    // Configuración de la tabla en el PDF
     doc.autoTable({
         head: [['ID', 'Fecha', 'Cliente', 'Productos', 'Total', 'Estado', 'Dirección', 'Código Postal', 'Ciudad', 'Provincia']],
         body: tableData,
         startY: 25,
-        styles: { fontSize: 8 },
+        styles: { fontSize: 6, cellPadding: 2 }, // Reducir tamaño de fuente
         columnStyles: {
-            0: { cellWidth: 20 },
-            1: { cellWidth: 25 },
-            2: { cellWidth: 20 },
-            3: { cellWidth: 60 },
-            4: { cellWidth: 25 },
-            5: { cellWidth: 25 },
+            0: { cellWidth: 15 },
+            1: { cellWidth: 20 },
+            2: { cellWidth: 15 },
+            3: { cellWidth: 50 },
+            4: { cellWidth: 20 },
+            5: { cellWidth: 15 },
             6: { cellWidth: 40 },
-            7: { cellWidth: 30 },
-            8: { cellWidth: 30 },
-            9: { cellWidth: 30 }
+            7: { cellWidth: 25 },
+            8: { cellWidth: 25 },
+            9: { cellWidth: 25 }
         },
+        margin: { top: 15, left: 10, right: 10 }, // Margen de la tabla
         didDrawPage: function (data) {
+            // Agregar número de página
             doc.setFontSize(10);
             doc.text(
                 `Página ${doc.internal.getCurrentPageInfo().pageNumber}/${doc.internal.getNumberOfPages()}`,
                 doc.internal.pageSize.width - 20,
                 doc.internal.pageSize.height - 10
             );
+        },
+        // Permitir que la tabla se divida en varias páginas si es necesario
+        didParseCell: function (data) {
+            if (data.row.index === tableData.length - 1) {
+                // Si estamos en la última fila, aseguramos que todo quede bien
+                doc.addPage();
+            }
         }
     });
 
     // Guardar el PDF
     doc.save('historial-pedidos.pdf');
 }
+
 
     </script>
 </body>
