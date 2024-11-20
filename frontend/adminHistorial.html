@@ -106,28 +106,39 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
 
     <script>
-        let allPedidos = []; // Aquí guardamos todos los pedidos para generar el PDF
+         let allPedidos = []; 
+        let historialPedidos = [];
 
         document.addEventListener('DOMContentLoaded', function () {
             const pedidoList = document.getElementById('pedido-list');
+            
+            // Cargar el historial guardado
+            historialPedidos = JSON.parse(localStorage.getItem('historialPedidos') || '[]');
 
             // Fetch de todos los pedidos desde la API
             fetch('https://vision-digital-api.vercel.app/api/pedidos')
                 .then(response => response.json())
                 .then(data => {
-                    allPedidos = data; // Guardamos los pedidos globalmente
+                    allPedidos = data;
 
-                    if (data.length === 0) {
-                        // Si no hay pedidos, mostrar un mensaje
+                    // Combinar pedidos actuales con historial
+                    const pedidosCombinados = [...new Map([...data, ...historialPedidos]
+                        .map(item => [item.id_pedido, item]))
+                        .values()];
+
+                    if (pedidosCombinados.length === 0) {
                         pedidoList.innerHTML = `<div class="alert alert-info text-center" role="alert">
                             No hay pedidos registrados.
                         </div>`;
                     } else {
+                        // Guardar pedidos actuales en el historial
+                        historialPedidos = pedidosCombinados;
+                        localStorage.setItem('historialPedidos', JSON.stringify(historialPedidos));
+
                         // Agrupar pedidos por fecha
-                        const pedidosPorFecha = data.reduce((acc, pedido) => {
+                        const pedidosPorFecha = pedidosCombinados.reduce((acc, pedido) => {
                             let fecha;
                             try {
-                                // Validar o transformar el formato de fecha
                                 fecha = new Date(pedido.fecha).toLocaleDateString('es-ES') || "Fecha desconocida";
                             } catch {
                                 fecha = "Fecha desconocida";
@@ -179,10 +190,15 @@
                                             ? productos.reduce((total, prod) => total + prod.cantidad, 0)
                                             : 0;
 
+                                        // Agregar etiqueta si el pedido está en el historial pero no en los actuales
+                                        const isPedidoHistorico = !allPedidos.some(p => p.id_pedido === pedido.id_pedido);
+                                        const etiquetaHistorial = isPedidoHistorico ? 
+                                            '<span class="badge bg-secondary">Histórico</span> ' : '';
+
                                         pedidoCard.innerHTML = `
                                             <div class="card shadow">
                                                 <div class="card-header">
-                                                    Pedido #${pedido.id_pedido}
+                                                    ${etiquetaHistorial}Pedido #${pedido.id_pedido}
                                                 </div>
                                                 <div class="card-body">
                                                     <p class="card-text"><strong>Cliente ID:</strong> ${pedido.id_usuario}</p>
@@ -214,9 +230,8 @@
                 });
         });
 
-        // Función para generar el PDF
- // Función para generar el PDF
-function generatePDF() {
+        // Mantener la misma función generatePDF
+      function generatePDF() {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
 
@@ -260,7 +275,6 @@ function generatePDF() {
     // Guardar el PDF
     doc.save('historial-pedidos.pdf');
 }
-
 
     </script>
 </body>
